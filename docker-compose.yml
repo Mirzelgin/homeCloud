@@ -1,1 +1,29 @@
-
+version: "3"
+  
+services:
+  db:
+    image: mariadb
+    container_name: db
+    environment:
+      - PUID=1002 #change PUID if needed
+      - PGID=100  #change PGID if needed
+      - MYSQL_ROOT_PASSWORD=mariadbpassword  #change password
+      - TZ=Europe/Moscow #Change Time Zone if needed
+    volumes:
+      - /srv/dev-disk-by-label-nasdata/appdata/db:/var/lib/mysql
+    restart: always
+  
+  nextcloud:
+    image: nextcloud
+    container_name: nextcloud
+    environment:
+      - PUID=1002 #change PUID if needed
+      - PGID=100  #change PGID if needed
+      - TZ=Europe/Moscow #change Time Zone if needed
+    volumes:
+      - /srv/dev-disk-by-label-nasdata/appdata/nextcloud/config:/var/www/html
+    depends_on:
+      - mariadb
+    ports:
+      - 450:443
+    restart: always
